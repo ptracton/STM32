@@ -8,6 +8,8 @@
 *.mem
 *.hex
 *.srec
+*.__i
+*.crf
 
 # Precompiled Headers
 *.gch
