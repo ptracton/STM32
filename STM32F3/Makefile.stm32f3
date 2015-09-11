@@ -125,7 +125,7 @@ CMSIS_ROOT_DIR    = $(STM32F3_CUBE_ROOT_DIR)Drivers/CMSIS/Device/ST/STM32F3xx
 CMSIS_INC_DIR     = $(CMSIS_ROOT_DIR)/Include
 CINCLUDES        += -I$(CMSIS_INC_DIR)
 CINCLUDES        += -I$(STM32F3_CUBE_ROOT_DIR)Drivers/CMSIS/Include
-TAG_FILES        += $(CMSIS_INC_DIR)/*.h $(STM32F3_CUBE_ROOT_DIR)Drivers/CMSIS/Include/*.h
+TAG_FILES        += $(CMSIS_INC_DIR)/stm32f303xc.h $(CMSIS_INC_DIR)/stm32f3xx.h $(CMSIS_INC_DIR)/system_stm32f3xx.h
 endif
 
 ##
@@ -156,6 +156,48 @@ CINCLUDES          += -I$(USB_HID_INC_DIR)
 ELF_REQUIREMENTS   += $(USB_HID_OBJECTS)
 TAG_FILES          += $(USB_HID_SRC_DIR)/*.c $(USB_HID_INC_DIR)/*.h
 endif
+
+##
+## FreeRTOS
+##
+ifeq ($(FreeRTOS), 1)
+FreeRTOS_ROOT_DIR = $(STM32F3_CUBE_ROOT_DIR)/Middlewares/Third_Party/FreeRTOS
+FreeRTOS_SRC_DIR  = $(FreeRTOS_ROOT_DIR)/Source
+FreeRTOS_INC_DIR  = $(FreeRTOS_ROOT_DIR)/Source/include
+FreeRTOS_SOURCES  = $(wildcard $(FreeRTOS_SRC_DIR)/*.c)
+FreeRTOS_OBJECTS += $(patsubst $(FreeRTOS_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(FreeRTOS_SOURCES))
+VPATH            += $(FreeRTOS_SRC_DIR)
+CINCLUDES        += -I$(FreeRTOS_INC_DIR)
+ELF_REQUIREMENTS += $(FreeRTOS_OBJECTS)
+TAG_FILES        += $(FreeRTOS_SRC_DIR)/*.c $(FreeRTOS_INC_DIR)/*.h
+
+FreeRTOS_PORT_SRC_DIR  = $(FreeRTOS_SRC_DIR)/portable/GCC/ARM_CM4F
+FreeRTOS_PORT_INC_DIR  = $(FreeRTOS_SRC_DIR)/portable/GCC/ARM_CM4F
+FreeRTOS_PORT_SOURCES  = $(wildcard $(FreeRTOS_PORT_SRC_DIR)/*.c)
+FreeRTOS_PORT_OBJECTS += $(patsubst $(FreeRTOS_PORT_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(FreeRTOS_PORT_SOURCES))
+VPATH                 += $(FreeRTOS_PORT_SRC_DIR)
+CINCLUDES             += -I$(FreeRTOS_PORT_INC_DIR)
+ELF_REQUIREMENTS      += $(FreeRTOS_PORT_OBJECTS)
+TAG_FILES             += $(FreeRTOS_PORT_SRC_DIR)/*.c $(FreeRTOS_PORT_INC_DIR)/*.h
+
+FreeRTOS_MEMMANG_SRC_DIR = $(FreeRTOS_SRC_DIR)/portable/MemMang
+FreeRTOS_MEMMANG_SOURCES  = $(FreeRTOS_MEMMANG_SRC_DIR)/heap_2.c
+FreeRTOS_MEMMANG_OBJECTS += $(OBJ_DIR)/heap_2.o
+VPATH                 += $(FreeRTOS_MEMMANG_SRC_DIR)
+ELF_REQUIREMENTS      += $(FreeRTOS_MEMMANG_OBJECTS)
+TAG_FILES             += $(FreeRTOS_MEMMANG_SRC_DIR)/*.c
+
+FreeRTOS_CMSIS_SRC_DIR  = $(FreeRTOS_ROOT_DIR)/Source/CMSIS_RTOS/
+FreeRTOS_CMSIS_INC_DIR  = $(FreeRTOS_ROOT_DIR)/Source/CMSIS_RTOS/
+FreeRTOS_CMSIS_SOURCES  = $(wildcard $(FreeRTOS_CMSIS_SRC_DIR)/*.c)
+FreeRTOS_CMSIS_OBJECTS += $(patsubst $(FreeRTOS_CMSIS_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(FreeRTOS_CMSIS_SOURCES))
+VPATH                 += $(FreeRTOS_CMSIS_SRC_DIR)
+CINCLUDES             += -I$(FreeRTOS_CMSIS_INC_DIR)
+ELF_REQUIREMENTS      += $(FreeRTOS_CMSIS_OBJECTS)
+TAG_FILES             += $(FreeRTOS_CMSIS_SRC_DIR)/*.c $(FreeRTOS_CMSIS_INC_DIR)/*.h
+
+endif
+
 
 ##
 ## Options passed to the C compiler
