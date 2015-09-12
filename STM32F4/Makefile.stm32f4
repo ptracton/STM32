@@ -1,0 +1,329 @@
+include ../../environment.mk
+
+##
+## OpenOCD setup
+##
+OOCD		     = openocd
+OOCD_INTERFACE	 = stlink-v2
+OOCD_BOARD	     = stm32f4discovery
+OCDFLAGS         = -f board/stm32f4discovery.cfg
+OCD_DIR          = /usr/share/openocd/scripts
+
+
+##
+## Project Directories
+##
+SRC_DIR = src
+OBJ_DIR = objects
+INC_DIR = includes
+EXEC_DIR = executable
+DEP_DIR = dep
+LD_DIR = GCC
+
+
+##
+## The files we are creating
+##
+ELF_FILE  = $(EXEC_DIR)/$(TARGET).elf
+LIST_FILE = $(EXEC_DIR)/$(TARGET).lst
+HEX_FILE  = $(EXEC_DIR)/$(TARGET).hex
+SREC_FILE = $(EXEC_DIR)/$(TARGET).srec
+BIN_FILE  = $(EXEC_DIR)/$(TARGET).bin
+
+##
+## Start up file
+##
+ASM_SOURCES      += GCC/startup_stm32f407xx.s
+ASM_OBJECTS      += $(OBJ_DIR)/startup_stm32f407xx.o
+ELF_REQUIREMENTS += $(ASM_OBJECTS)
+VPATH            += GCC
+ASMFLAGS         += -mcpu=cortex-m4 -mthumb -warn --fatal-warnings
+
+##
+## Project sources converted to objects
+##
+SOURCES          += $(wildcard $(SRC_DIR)/*.c)
+OBJECTS          += $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
+DEPS              = $(addprefix $(DEP_DIR),$(SOURCES:.c=.d))
+CINCLUDES        += -I$(INC_DIR)
+VPATH            += $(SRC_DIR)
+ELF_REQUIREMENTS += $(OBJECTS) 
+LDSCRIPT          =$(LD_DIR)/STM32F407VGTx_FLASH.ld
+TAG_FILES        += $(SRC_DIR)/*.c $(INC_DIR)/*.h
+
+
+##
+## Board Support Package (BSP)
+##
+ifeq ($(BSP),1)
+BSP_ROOT_DIR      = $(STM32F4_CUBE_ROOT_DIR)Drivers/BSP/STM32F4-Discovery
+BSP_SRC_DIR       = $(BSP_ROOT_DIR)
+BSP_INC_DIR       = $(BSP_ROOT_DIR)
+BSP_SOURCES      += $(wildcard $(BSP_SRC_DIR)/*.c)
+BSP_OBJECTS      += $(patsubst $(BSP_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(BSP_SOURCES))
+VPATH            += $(BSP_SRC_DIR)
+CINCLUDES        += -I$(BSP_INC_DIR)
+ELF_REQUIREMENTS += $(BSP_OBJECTS)
+TAG_FILES        += $(BSP_SRC_DIR)/*.c $(BSP_INC_DIR)/*.h
+
+##
+## BSP Components
+##
+BSP_COMPONENTS_ROOT_DIR      = $(STM32F4_CUBE_ROOT_DIR)Drivers/BSP/Components
+BSP_COMPONENTS_INC_DIR       = $(BSP_COMPONENTS_ROOT_DIR)/Common
+CINCLUDES                   += -I$(BSP_COMPONENTS_INC_DIR)
+TAG_FILES                   += $(BSP_COMPONENTS_INC_DIR)/*.h
+
+##
+## BSP L3GD20
+##
+BSP_L3GD20_ROOT_DIR      = $(STM32F4_CUBE_ROOT_DIR)Drivers/BSP/Components/l3gd20
+BSP_L3GD20_SRC_DIR       = $(BSP_L3GD20_ROOT_DIR)
+BSP_L3GD20_INC_DIR       = $(BSP_L3GD20_ROOT_DIR)
+BSP_L3GD20_SOURCES      += $(wildcard $(BSP_L3GD20_SRC_DIR)/*.c)
+BSP_L3GD20_OBJECTS      += $(patsubst $(BSP_L3GD20_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(BSP_L3GD20_SOURCES))
+VPATH                   += $(BSP_L3GD20_SRC_DIR)
+CINCLUDES               += -I$(BSP_L3GD20_INC_DIR)
+ELF_REQUIREMENTS        += $(BSP_L3GD20_OBJECTS)
+TAG_FILES               += $(BSP_L3GD20_SRC_DIR)/*.c $(BSP_L3GD20_INC_DIR)/*.h
+
+##
+## BSP lsm303dlhc
+##
+BSP_LSM303DLHC_ROOT_DIR  = $(STM32F4_CUBE_ROOT_DIR)Drivers/BSP/Components/lsm303dlhc
+BSP_LSM303DLHC_SRC_DIR   = $(BSP_LSM303DLHC_ROOT_DIR)
+BSP_LSM303DLHC_INC_DIR   = $(BSP_LSM303DLHC_ROOT_DIR)
+BSP_LSM303DLHC_SOURCES  += $(wildcard $(BSP_LSM303DLHC_SRC_DIR)/*.c)
+BSP_LSM303DLHC_OBJECTS  += $(patsubst $(BSP_LSM303DLHC_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(BSP_LSM303DLHC_SOURCES))
+VPATH                   += $(BSP_LSM303DLHC_SRC_DIR)
+CINCLUDES               += -I$(BSP_LSM303DLHC_INC_DIR)
+ELF_REQUIREMENTS        += $(BSP_LSM303DLHC_OBJECTS)
+TAG_FILES               += $(BSP_LSM303DLHC_SRC_DIR)/*.c $(BSP_LSM303DLHC_INC_DIR)/*.h
+endif
+
+##
+## HAL Drivers
+##
+ifeq ($(HAL),1)
+HAL_ROOT_DIR      = $(STM32F4_CUBE_ROOT_DIR)Drivers/STM32F4xx_HAL_Driver
+HAL_SRC_DIR       = $(HAL_ROOT_DIR)/Src
+HAL_INC_DIR       = $(HAL_ROOT_DIR)/Inc
+HAL_SOURCES      += $(wildcard $(HAL_SRC_DIR)/*.c)
+HAL_SOURCES_FIX  := $(filter-out $(HAL_SRC_DIR)/stm32f4xx_hal_msp_template.c,$(HAL_SOURCES))
+HAL_OBJECTS      += $(patsubst $(HAL_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(HAL_SOURCES_FIX))
+VPATH            += $(HAL_SRC_DIR)
+CINCLUDES        += -I$(HAL_INC_DIR)
+ELF_REQUIREMENTS += $(HAL_OBJECTS)
+TAG_FILES        += $(HAL_SRC_DIR)/*.c $(HAL_INC_DIR)/*.h
+endif
+
+##
+## CMSIS Drivers
+##
+ifeq ($(CMSIS),1)
+CMSIS_ROOT_DIR    = $(STM32F4_CUBE_ROOT_DIR)Drivers/CMSIS/Device/ST/STM32F4xx
+CMSIS_INC_DIR     = $(CMSIS_ROOT_DIR)/Include
+CINCLUDES        += -I$(CMSIS_INC_DIR)
+CINCLUDES        += -I$(STM32F4_CUBE_ROOT_DIR)Drivers/CMSIS/Include
+TAG_FILES        += $(CMSIS_INC_DIR)/*.h
+endif
+
+##
+## USB Devices
+##
+ifeq ($(USB),1)
+USB_ROOT_DIR      = $(STM32F4_CUBE_ROOT_DIR)Middlewares/ST/STM32_USB_Device_Library/Core
+USB_SRC_DIR       = $(USB_ROOT_DIR)/Src
+USB_INC_DIR       = $(USB_ROOT_DIR)/Inc
+USB_SOURCES      += $(wildcard $(USB_SRC_DIR)/*.c)
+USB_SOURCES_FIX  := $(filter-out $(USB_SRC_DIR)/usbd_conf_template.c,$(USB_SOURCES))
+USB_OBJECTS      += $(patsubst $(USB_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(USB_SOURCES_FIX))
+VPATH            += $(USB_SRC_DIR)
+CINCLUDES        += -I$(USB_INC_DIR)
+ELF_REQUIREMENTS += $(USB_OBJECTS)
+TAG_FILES        += $(USB_SRC_DIR)/*.c $(USB_INC_DIR)/*.h
+
+##
+## USB HID Devices
+##
+USB_HID_ROOT_DIR    = $(STM32F4_CUBE_ROOT_DIR)Middlewares/ST/STM32_USB_Device_Library/Class/HID
+USB_HID_SRC_DIR     = $(USB_HID_ROOT_DIR)/Src
+USB_HID_INC_DIR     = $(USB_HID_ROOT_DIR)/Inc
+USB_HID_SOURCES    += $(wildcard $(USB_HID_SRC_DIR)/*.c)
+USB_HID_OBJECTS    += $(patsubst $(USB_HID_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(USB_HID_SOURCES))
+VPATH              += $(USB_HID_SRC_DIR)
+CINCLUDES          += -I$(USB_HID_INC_DIR)
+ELF_REQUIREMENTS   += $(USB_HID_OBJECTS)
+TAG_FILES          += $(USB_HID_SRC_DIR)/*.c $(USB_HID_INC_DIR)/*.h
+endif
+
+##
+## FreeRTOS
+##
+ifeq ($(FreeRTOS), 1)
+FreeRTOS_ROOT_DIR = $(STM32F4_CUBE_ROOT_DIR)/Middlewares/Third_Party/FreeRTOS
+FreeRTOS_SRC_DIR  = $(FreeRTOS_ROOT_DIR)/Source
+FreeRTOS_INC_DIR  = $(FreeRTOS_ROOT_DIR)/Source/include
+FreeRTOS_SOURCES  = $(wildcard $(FreeRTOS_SRC_DIR)/*.c)
+FreeRTOS_OBJECTS += $(patsubst $(FreeRTOS_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(FreeRTOS_SOURCES))
+VPATH            += $(FreeRTOS_SRC_DIR)
+CINCLUDES        += -I$(FreeRTOS_INC_DIR)
+ELF_REQUIREMENTS += $(FreeRTOS_OBJECTS)
+TAG_FILES        += $(FreeRTOS_SRC_DIR)/*.c $(FreeRTOS_INC_DIR)/*.h
+
+FreeRTOS_PORT_SRC_DIR  = $(FreeRTOS_SRC_DIR)/portable/GCC/ARM_CM4F
+FreeRTOS_PORT_INC_DIR  = $(FreeRTOS_SRC_DIR)/portable/GCC/ARM_CM4F
+FreeRTOS_PORT_SOURCES  = $(wildcard $(FreeRTOS_PORT_SRC_DIR)/*.c)
+FreeRTOS_PORT_OBJECTS += $(patsubst $(FreeRTOS_PORT_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(FreeRTOS_PORT_SOURCES))
+VPATH                 += $(FreeRTOS_PORT_SRC_DIR)
+CINCLUDES             += -I$(FreeRTOS_PORT_INC_DIR)
+ELF_REQUIREMENTS      += $(FreeRTOS_PORT_OBJECTS)
+TAG_FILES             += $(FreeRTOS_PORT_SRC_DIR)/*.c $(FreeRTOS_PORT_INC_DIR)/*.h
+
+FreeRTOS_MEMMANG_SRC_DIR = $(FreeRTOS_SRC_DIR)/portable/MemMang
+FreeRTOS_MEMMANG_SOURCES  = $(FreeRTOS_MEMMANG_SRC_DIR)/heap_2.c
+FreeRTOS_MEMMANG_OBJECTS += $(OBJ_DIR)/heap_2.o
+VPATH                 += $(FreeRTOS_MEMMANG_SRC_DIR)
+ELF_REQUIREMENTS      += $(FreeRTOS_MEMMANG_OBJECTS)
+TAG_FILES             += $(FreeRTOS_MEMMANG_SRC_DIR)/*.c
+
+FreeRTOS_CMSIS_SRC_DIR  = $(FreeRTOS_ROOT_DIR)/Source/CMSIS_RTOS/
+FreeRTOS_CMSIS_INC_DIR  = $(FreeRTOS_ROOT_DIR)/Source/CMSIS_RTOS/
+FreeRTOS_CMSIS_SOURCES  = $(wildcard $(FreeRTOS_CMSIS_SRC_DIR)/*.c)
+FreeRTOS_CMSIS_OBJECTS += $(patsubst $(FreeRTOS_CMSIS_SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(FreeRTOS_CMSIS_SOURCES))
+VPATH                 += $(FreeRTOS_CMSIS_SRC_DIR)
+CINCLUDES             += -I$(FreeRTOS_CMSIS_INC_DIR)
+ELF_REQUIREMENTS      += $(FreeRTOS_CMSIS_OBJECTS)
+TAG_FILES             += $(FreeRTOS_CMSIS_SRC_DIR)/*.c $(FreeRTOS_CMSIS_INC_DIR)/*.h
+
+endif
+
+
+##
+## Options passed to the C compiler
+##
+CFLAGS  += -DSTM32F407xx
+CFLAGS  += -DUSE_HAL_DRIVER
+CFLAGS	+= -Os -g  $(CINCLUDES)\
+	   -fno-common -mcpu=cortex-m4 -mthumb \
+	   -mfloat-abi=hard -mfpu=fpv4-sp-d16 -MD -DSTM32F4
+
+##
+## This used to work well before CUBE, but CUBE is a mess
+## with violations of this.  You can turn it on all or in
+## part but the build is ugly then
+##
+#CFLAGS  += -Wall -Wextra -Wpedantic -Werror
+
+
+##
+## Flags for linking image together
+##
+LDFLAGS		+= --static -lc  \
+		   -T$(LDSCRIPT) -Wl,--gc-sections \
+		   -mthumb -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16
+
+##
+## The directories to make for this build.
+##
+MAKE_DIRS += $(OBJ_DIR) $(EXEC_DIR) $(DEP_DIR)
+
+##
+## The list of steps to build the image
+##
+BUILD_LIST += dirs tags $(ELF_FILE) $(LIST_FILE) $(HEX_FILE) $(SREC_FILE) $(BIN_FILE)
+
+.PHONY: all dirs clean
+
+all: $(BUILD_LIST) 
+
+-include $(DEPS)
+
+##
+## Create the directories needed for this build
+##
+dirs:
+	@echo "Making directories $(MAKE_DIRS)"
+	@echo "$(BUILD_LIST)"
+	@$(MKDIR) -p $(MAKE_DIRS)
+
+##
+## Link together the executable
+##
+$(ELF_FILE): $(ELF_REQUIREMENTS)
+	@echo "Linking $(ELF_FILE)"
+	$(LD) -o $(ELF_FILE) $(ELF_REQUIREMENTS) $(LDFLAGS)
+
+
+$(HEX_FILE) :$(ELF_FILE)
+	@echo "Creating $(HEX_FILE)"
+	@$(OBJCOPY) -Oihex $(ELF_FILE) $(HEX_FILE)
+
+$(SREC_FILE):$(ELF_FILE)
+	@echo "Creating $(SREC_FILE)"
+	@$(OBJCOPY) -Osrec $(ELF_FILE)  $(SREC_FILE)
+
+$(BIN_FILE):$(ELF_FILE)
+	@echo "Creating $(BIN_FILE)"
+	@$(OBJCOPY) -Obinary $(ELF_FILE) $(BIN_FILE)
+
+$(LIST_FILE):$(ELF_FILE)
+	@echo "Creating $(LIST_FILE)"
+	@$(OBJDUMP) -S $(ELF_FILE) >  $(LIST_FILE)
+
+##
+## Turn out C code into objects in our $(OBJ_DIR)
+##
+$(OBJ_DIR)/%.o:%.c
+	@echo "Compiling  $<"
+	@$(CC) $(CFLAGS) -o $@ -c $< -MMD -MF dep/$(*F).d
+
+##
+## Turn out ASM code into objects in our $(OBJ_DIR)
+##
+$(OBJ_DIR)/%.o:%.s
+	@echo "Assembling $<"
+	@$(ASM) $(ASMFLAGS)  -o $@ -c $< 
+
+##
+## Create TAGS file for our editor to find symbols in code
+##
+tags:
+	etags $(TAG_FILES)
+
+##
+## Start up OPENOCD for our target board
+##
+openocd:
+	$(OCD) -s $(OCD_DIR) $(OCDFLAGS)
+
+##
+## Non-gui debug via arm-none-eable-gdb, openocd should be running first
+##
+debug:
+	@if ! nc -z localhost 3333; then \
+		echo "\n\t[Error] OpenOCD is not running! Start it with: 'make openocd'\n"; exit 1; \
+	else \
+		$(GDB)  -ex "target extended localhost:3333" \
+			-ex "monitor arm semihosting enable" \
+			-ex "monitor reset halt" \
+			-ex "load" \
+			-ex "monitor reset init" \
+			$(GDBFLAGS) $(TARGET).elf; \
+	fi
+
+##
+## Program target via stlink took
+##
+program: dirs $(BIN_FILE)
+	$(FLASH) write $(BIN_FILE) 0x8000000
+
+##
+## Clean up files and directories
+##
+clean:
+	find . -name "*~" | xargs $(RM) -f
+	$(RM) -f TAGS	
+	$(RM) -rf $(OBJ_DIR)
+	$(RM) -rf $(EXEC_DIR)
+	$(RM) -rf $(DEP_DIR)
