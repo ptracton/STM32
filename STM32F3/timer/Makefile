@@ -1,8 +1,9 @@
 
+
 ##
 ## This is the name of the executable
 ##
-TARGET = leds
+TARGET = timer
 HAL = 1
 CMSIS = 1
 BSP =1

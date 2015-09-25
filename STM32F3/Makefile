@@ -1,5 +1,5 @@
 DIRS = leds
-
+DIRS += timer
 
 all:
 	$(foreach c,$(DIRS),$(MAKE) -C $(c) && ) true
