@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_proj.xsd">
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="project_projx.xsd">
 
-  <SchemaVersion>1.1</SchemaVersion>
+  <SchemaVersion>2.1</SchemaVersion>
 
   <Header>### uVision Project, (C) Keil Software</Header>
 
@@ -14,29 +14,29 @@
         <TargetCommonOption>
           <Device>STM32F303VC</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <Cpu>IRAM(0x20000000-0x20009FFF) IRAM2(0x10000000-0x10001FFF) IROM(0x8000000-0x803FFFF) CLOCK(8000000) CPUTYPE("Cortex-M4") FPU2</Cpu>
+          <Cpu>IROM(0x08000000,0x40000) IRAM(0x20000000,0xC000) IRAM2(0x10000000,0x2000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
-          <StartupFile>"Startup\ST\STM32F30x\startup_stm32f30x.s" ("STM32F30x Startup Code")</StartupFile>
-          <FlashDriverDll>UL2CM3(-O207 -S0 -C0 -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F3xx_256 -FS08000000 -FL040000)</FlashDriverDll>
+          <StartupFile></StartupFile>
+          <FlashDriverDll>UL2CM3(-S0 -C0 -P0 -FD20000000 -FC1000 -FN1 -FF0STM32F3xx_256 -FS08000000 -FL040000 -FP0($$Device:STM32F303VC$Flash\STM32F3xx_256.FLM))</FlashDriverDll>
           <DeviceId>6331</DeviceId>
-          <RegisterFile>stm32f30x.h</RegisterFile>
+          <RegisterFile>$$Device:STM32F303VC$Device\Include\STM32F30x.h</RegisterFile>
           <MemoryEnv></MemoryEnv>
           <Cmp></Cmp>
           <Asm></Asm>
           <Linker></Linker>
           <OHString></OHString>
           <InfinionOptionDll></InfinionOptionDll>
-          <SLE66CMisc></SLE66CMisc>
+          <SLE66CMisc>-DSTM32F303xC</SLE66CMisc>
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
-          <SFDFile>SFD\ST\STM32F30x\STM32F30x.sfr</SFDFile>
+          <SFDFile>$$Device:STM32F303VC$SVD\STM32F30x.svd</SFDFile>
           <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
           <LibPath></LibPath>
-          <RegisterFilePath>ST\STM32F30x\</RegisterFilePath>
-          <DBRegisterFilePath>ST\STM32F30x\</DBRegisterFilePath>
+          <RegisterFilePath></RegisterFilePath>
+          <DBRegisterFilePath></DBRegisterFilePath>
           <TargetStatus>
             <Error>0</Error>
             <ExitCodeStop>0</ExitCodeStop>
@@ -45,7 +45,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>leds</OutputName>
+          <OutputName>template</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -72,6 +72,8 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
+            <nStopB1X>0</nStopB1X>
+            <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
@@ -119,7 +121,7 @@
             <Oh166RecLen>16</Oh166RecLen>
           </OPTHX>
           <Simulator>
-            <UseSimulator>1</UseSimulator>
+            <UseSimulator>0</UseSimulator>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -128,9 +130,10 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
-            <UseTarget>0</UseTarget>
+            <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
             <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
@@ -139,9 +142,11 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>1</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
+            <UsePdscDebugDescription>1</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>11</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -155,7 +160,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>STLink\ST-LINKIII-KEIL_SWO.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -274,7 +279,7 @@
               <IRAM>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0xa000</Size>
+                <Size>0xc000</Size>
               </IRAM>
               <IROM>
                 <Type>1</Type>
@@ -329,7 +334,7 @@
               <OCR_RVCT9>
                 <Type>0</Type>
                 <StartAddress>0x20000000</StartAddress>
-                <Size>0xa000</Size>
+                <Size>0xc000</Size>
               </OCR_RVCT9>
               <OCR_RVCT10>
                 <Type>0</Type>
@@ -353,9 +358,11 @@
             <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
+            <uC99>0</uC99>
+            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>STM32F303xC, USE_HAL_DRIVER</Define>
+              <Define>STM32F303xC</Define>
               <Undefine></Undefine>
               <IncludePath>..\includes;..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\STM32F3xx_HAL_Driver\Inc;..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\CMSIS\Include;..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\CMSIS\Device\ST\STM32F3xx\Include;..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery;..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\Components\l3gd20;..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\Components\lsm303dlhc</IncludePath>
             </VariousControls>
@@ -369,6 +376,7 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
+            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -385,6 +393,7 @@
             <useFile>0</useFile>
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
+            <pXoBase></pXoBase>
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
@@ -396,13 +405,11 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>leds</GroupName>
+          <GroupName>Source Group 1</GroupName>
+        </Group>
+        <Group>
+          <GroupName>Source</GroupName>
           <Files>
-            <File>
-              <FileName>startup_stm32f30x.s</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\startup_stm32f30x.s</FilePath>
-            </File>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
@@ -419,6 +426,11 @@
               <FilePath>..\src\stm32f3xx_it.c</FilePath>
             </File>
             <File>
+              <FileName>startup_stm32f30x.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\startup_stm32f30x.s</FilePath>
+            </File>
+            <File>
               <FileName>system_stm32f3xx.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\system_stm32f3xx.c</FilePath>
@@ -426,7 +438,40 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>device_drivers</GroupName>
+          <GroupName>BSP</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f3_discovery.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery\stm32f3_discovery.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f3_discovery_accelerometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery\stm32f3_discovery_accelerometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f3_discovery_gyroscope.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery\stm32f3_discovery_gyroscope.c</FilePath>
+            </File>
+            <File>
+              <FileName>lsm303dlhc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\Components\lsm303dlhc\lsm303dlhc.c</FilePath>
+            </File>
+            <File>
+              <FileName>l3gd20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\Components\l3gd20\l3gd20.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>CMSIS</GroupName>
+        </Group>
+        <Group>
+          <GroupName>Drivers</GroupName>
           <Files>
             <File>
               <FileName>stm32f3xx_hal.c</FileName>
@@ -680,41 +725,27 @@
             </File>
           </Files>
         </Group>
-        <Group>
-          <GroupName>CMSIS</GroupName>
-        </Group>
-        <Group>
-          <GroupName>BSP</GroupName>
-          <Files>
-            <File>
-              <FileName>stm32f3_discovery.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery\stm32f3_discovery.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f3_discovery_accelerometer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery\stm32f3_discovery_accelerometer.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f3_discovery_gyroscope.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\STM32F3-Discovery\stm32f3_discovery_gyroscope.c</FilePath>
-            </File>
-            <File>
-              <FileName>lsm303dlhc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\Components\lsm303dlhc\lsm303dlhc.c</FilePath>
-            </File>
-            <File>
-              <FileName>l3gd20.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\STM32Cube_FW_F3_V1.2.0\Drivers\BSP\Components\l3gd20\l3gd20.c</FilePath>
-            </File>
-          </Files>
-        </Group>
       </Groups>
     </Target>
   </Targets>
+
+  <RTE>
+    <apis/>
+    <components/>
+    <files>
+      <file attr="config" category="source" condition="STM32F30x" name="Device\Source\ARM\startup_stm32f30x.s">
+        <instance index="0" removed="1">RTE\Device\STM32F303VC\startup_stm32f30x.s</instance>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="STM32F3xx CMSIS Device"/>
+        <package name="STM32F3xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.0.1"/>
+        <targetInfos/>
+      </file>
+      <file attr="config" category="source" condition="STM32F30x" name="Device\Source\system_stm32f30x.c">
+        <instance index="0" removed="1">RTE\Device\STM32F303VC\system_stm32f30x.c</instance>
+        <component Cclass="Device" Cgroup="Startup" Cvendor="Keil" Cversion="1.0.0" condition="STM32F3xx CMSIS Device"/>
+        <package name="STM32F3xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="1.0.1"/>
+        <targetInfos/>
+      </file>
+    </files>
+  </RTE>
 
 </Project>

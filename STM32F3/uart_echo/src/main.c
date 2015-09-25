@@ -80,17 +80,31 @@ int main(void)
   /* Configure the system clock to have a system clock = 72 Mhz */
   SystemClock_Config();
 
-
   /* Add your application code here
      */
-  HAL_MspInit();
+
+  USART_Handle.Instance        = USART2;
+
+  USART_Handle.Init.BaudRate   = 115200;
+  USART_Handle.Init.WordLength = USART_WORDLENGTH_8B;
+  USART_Handle.Init.StopBits   = USART_STOPBITS_1;
+  USART_Handle.Init.Parity     = USART_PARITY_NONE;
+  //USART_Handle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  USART_Handle.Init.Mode       = USART_MODE_TX_RX;
+  USART_Handle.State           = HAL_USART_STATE_RESET;
+  
+  if(HAL_USART_Init(&USART_Handle) != HAL_OK)
+  {
+    Error_Handler();
+  }
+   
   
 
   /* Infinite loop */
-  tx_buffer[0] = 'A';
+  tx_buffer[0] = 'E';
   while (1)
   {
-    HAL_USART_Transmit_IT(&USART_Handle, &tx_buffer[0], 1);
+    HAL_USART_Transmit(&USART_Handle, &tx_buffer[0], 1, 10);
   }
 }
 

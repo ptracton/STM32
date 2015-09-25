@@ -166,6 +166,21 @@ void SysTick_Handler(void)
 /*  file (startup_stm32f3xx.s).                                               */
 /******************************************************************************/
 
+
+/**
+  * @brief  This function handles UART interrupt request.  
+  * @param  None
+  * @retval None
+  * @Note   This function is redefined in "main.h" and related to DMA channel 
+  *         used for USART data transmission     
+  */
+extern USART_HandleTypeDef USART_Handle;
+void USARTx_IRQHandler(void)
+{
+  HAL_USART_IRQHandler(&USART_Handle);
+}
+
+
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None
