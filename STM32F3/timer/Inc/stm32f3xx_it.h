@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    Templates/Inc/stm32f3xx_it.h
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    19-June-2015
+  * @version V1.4.0
+  * @date    13-November-2015
   * @brief   This file contains the headers of the interrupt handlers.
   ******************************************************************************
   * @attention
