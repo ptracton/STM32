@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    Templates/Src/stm32f3xx_it.c
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    19-June-2015
+  * @version V1.4.0
+  * @date    13-November-2015
   * @brief   Main Interrupt Service Routines.
   *          This file provides template for all exceptions handler and 
   *          peripherals interrupt service routine.
@@ -165,21 +165,6 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f3xx.s).                                               */
 /******************************************************************************/
-
-
-/**
-  * @brief  This function handles UART interrupt request.  
-  * @param  None
-  * @retval None
-  * @Note   This function is redefined in "main.h" and related to DMA channel 
-  *         used for USART data transmission     
-  */
-extern USART_HandleTypeDef USART_Handle;
-void USARTx_IRQHandler(void)
-{
-  HAL_USART_IRQHandler(&USART_Handle);
-}
-
 
 /**
   * @brief  This function handles PPP interrupt request.

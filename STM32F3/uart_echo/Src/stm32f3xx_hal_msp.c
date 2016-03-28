@@ -38,7 +38,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-extern USART_HandleTypeDef USART_Handle;
+extern UART_HandleTypeDef USART_Handle;
 
 /** @addtogroup STM32F3xx_HAL_Examples
   * @{
@@ -68,7 +68,7 @@ extern USART_HandleTypeDef USART_Handle;
   * @param huart: UART handle pointer
   * @retval None
   */
-void HAL_USART_MspInit(USART_HandleTypeDef *huart)
+void HAL_USART_MspInit(UART_HandleTypeDef *huart)
 {  
   GPIO_InitTypeDef  GPIO_InitStruct;
   
@@ -110,7 +110,7 @@ void HAL_USART_MspInit(USART_HandleTypeDef *huart)
   * @param huart: UART handle pointer
   * @retval None
   */
-void HAL_USART_MspDeInit(USART_HandleTypeDef *huart)
+void HAL_USART_MspDeInit(UART_HandleTypeDef *huart)
 {
   /*##-1- Reset peripherals ##################################################*/
   USARTx_FORCE_RESET();

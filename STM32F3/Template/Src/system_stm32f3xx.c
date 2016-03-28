@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    system_stm32f3xx.c
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    19-June-2015
+  * @version V1.4.0
+  * @date    13-November-2015
   * @brief   CMSIS Cortex-M4 Device Peripheral Access Layer System Source File.
   *
   * 1. This file provides two functions and one global variable to be called from
@@ -142,7 +142,7 @@
   */
 uint32_t SystemCoreClock = 8000000;
 
-__IO const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
+const uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
 
 /**
   * @}
@@ -262,6 +262,19 @@ void SystemCoreClockUpdate (void)
       pllsource = RCC->CFGR & RCC_CFGR_PLLSRC;
       pllmull = ( pllmull >> 18) + 2;
 
+#if defined (STM32F302xE) || defined (STM32F303xE) || defined (STM32F398xx)
+        predivfactor = (RCC->CFGR2 & RCC_CFGR2_PREDIV) + 1;
+      if (pllsource == RCC_CFGR_PLLSRC_HSE_PREDIV)
+      {
+        /* HSE oscillator clock selected as PREDIV1 clock entry */
+        SystemCoreClock = (HSE_VALUE / predivfactor) * pllmull;
+      }
+      else
+      {
+        /* HSI oscillator clock selected as PREDIV1 clock entry */
+        SystemCoreClock = (HSI_VALUE / predivfactor) * pllmull;
+      }
+#else      
       if (pllsource == RCC_CFGR_PLLSRC_HSI_DIV2)
       {
         /* HSI oscillator clock divided by 2 selected as PLL clock entry */
@@ -273,6 +286,7 @@ void SystemCoreClockUpdate (void)
         /* HSE oscillator clock selected as PREDIV1 clock entry */
         SystemCoreClock = (HSE_VALUE / predivfactor) * pllmull;
       }
+#endif /* STM32F302xE || STM32F303xE || STM32F398xx */
       break;
     default: /* HSI used as system clock */
       SystemCoreClock = HSI_VALUE;

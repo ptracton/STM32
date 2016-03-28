@@ -1,14 +1,10 @@
 /**
   ******************************************************************************
-  * @file    Templates/Src/stm32f3xx_hal_msp.c
-  * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    19-June-2015
-  * @brief   HAL MSP module.
+  * @file    stm32f3xx_it.c
+  * @brief   Interrupt Service Routines.
   ******************************************************************************
-  * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * COPYRIGHT(c) 2016 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -34,87 +30,59 @@
   *
   ******************************************************************************
   */
-
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "stm32f3xx_hal.h"
+#include "stm32f3xx.h"
+#include "stm32f3xx_it.h"
 
-/** @addtogroup STM32F3xx_HAL_Examples
-  * @{
-  */
+/* USER CODE BEGIN 0 */
 
-/** @addtogroup Templates
-  * @{
-  */
+/* USER CODE END 0 */
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+/* External variables --------------------------------------------------------*/
+extern UART_HandleTypeDef UART_Handle;
 
-/** @defgroup HAL_MSP_Private_Functions
-  * @{
-  */
+/******************************************************************************/
+/*            Cortex-M4 Processor Interruption and Exception Handlers         */ 
+/******************************************************************************/
 
 /**
-  * @brief  Initializes the Global MSP.
-  * @param  None
-  * @retval None
-  */
-void HAL_MspInit(void)
+* @brief This function handles System tick timer.
+*/
+void SysTick_Handler(void)
 {
-  /* NOTE : This function is generated automatically by MicroXplorer and eventually  
-            modified by the user
-   */ 
+  /* USER CODE BEGIN SysTick_IRQn 0 */
+
+  /* USER CODE END SysTick_IRQn 0 */
+  HAL_IncTick();
+  HAL_SYSTICK_IRQHandler();
+  /* USER CODE BEGIN SysTick_IRQn 1 */
+
+  /* USER CODE END SysTick_IRQn 1 */
 }
 
+/******************************************************************************/
+/* STM32F3xx Peripheral Interrupt Handlers                                    */
+/* Add here the Interrupt Handlers for the used peripherals.                  */
+/* For the available peripheral interrupt handler names,                      */
+/* please refer to the startup file (startup_stm32f3xx.s).                    */
+/******************************************************************************/
+
 /**
-  * @brief  DeInitializes the Global MSP.
-  * @param  None  
-  * @retval None
-  */
-void HAL_MspDeInit(void)
+* @brief This function handles USART2 global interrupt / USART2 wake-up interrupt through EXTI line 26.
+*/
+void USART2_IRQHandler(void)
 {
-  /* NOTE : This function is generated automatically by MicroXplorer and eventually  
-            modified by the user
-   */
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&UART_Handle);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
 }
 
-/**
-  * @brief  Initializes the PPP MSP.
-  * @param  None
-  * @retval None
-  */
-//void HAL_PPP_MspInit(void)
-//{
-  /* NOTE : This function is generated automatically by MicroXplorer and eventually  
-            modified by the user
-   */ 
-//}
+/* USER CODE BEGIN 1 */
 
-/**
-  * @brief  DeInitializes the PPP MSP.
-  * @param  None  
-  * @retval None
-  */
-//void HAL_PPP_MspDeInit(void)
-//{
-  /* NOTE : This function is generated automatically by MicroXplorer and eventually  
-            modified by the user
-   */
-//}
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
+/* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

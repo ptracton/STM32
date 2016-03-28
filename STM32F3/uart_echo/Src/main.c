@@ -50,7 +50,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-USART_HandleTypeDef USART_Handle;
+UART_HandleTypeDef UART_Handle;
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void Error_Handler(void);
@@ -83,17 +83,17 @@ int main(void)
   /* Add your application code here
      */
 
-  USART_Handle.Instance        = USART2;
+  UART_Handle.Instance        = USART2;
 
-  USART_Handle.Init.BaudRate   = 115200;
-  USART_Handle.Init.WordLength = USART_WORDLENGTH_8B;
-  USART_Handle.Init.StopBits   = USART_STOPBITS_1;
-  USART_Handle.Init.Parity     = USART_PARITY_NONE;
-  //USART_Handle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  USART_Handle.Init.Mode       = USART_MODE_TX_RX;
-  USART_Handle.State           = HAL_USART_STATE_RESET;
+  UART_Handle.Init.BaudRate   = 115200;
+  UART_Handle.Init.WordLength = UART_WORDLENGTH_8B;
+  UART_Handle.Init.StopBits   = UART_STOPBITS_1;
+  UART_Handle.Init.Parity     = UART_PARITY_NONE;
+  //UART_Handle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  UART_Handle.Init.Mode       = UART_MODE_TX_RX;
+  UART_Handle.State           = HAL_UART_STATE_RESET;
   
-  if(HAL_USART_Init(&USART_Handle) != HAL_OK)
+  if(HAL_UART_Init(&UART_Handle) != HAL_OK)
   {
     Error_Handler();
   }
@@ -104,7 +104,7 @@ int main(void)
   tx_buffer[0] = 'E';
   while (1)
   {
-    HAL_USART_Transmit(&USART_Handle, &tx_buffer[0], 1, 10);
+    HAL_UART_Transmit(&UART_Handle, &tx_buffer[0], 1, 10);
   }
 }
 

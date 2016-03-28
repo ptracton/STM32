@@ -13,9 +13,9 @@ OCD_DIR          = /usr/share/openocd/scripts
 ##
 ## Project Directories
 ##
-SRC_DIR = src
+SRC_DIR = Src
 OBJ_DIR = objects
-INC_DIR = includes
+INC_DIR = Inc
 EXEC_DIR = executable
 DEP_DIR = dep
 LD_DIR = GCC
@@ -204,6 +204,7 @@ endif
 ##
 CFLAGS  += -DSTM32F303xC
 CFLAGS  += -DUSE_HAL_DRIVER
+CFLAGS  += -DUSE_FULL_ASSERT
 CFLAGS	+= -Os -g  $(CINCLUDES)\
 	   -fno-common -mcpu=cortex-m4 -mthumb \
 	   -mfloat-abi=hard -mfpu=fpv4-sp-d16 -MD -DSTM32F3
