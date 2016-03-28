@@ -40,7 +40,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f3xx_it.h"
-   
+extern   TIM_HandleTypeDef Timer;   
 
 /** @addtogroup STM32F3xx_HAL_Examples
   * @{
@@ -175,7 +175,10 @@ void SysTick_Handler(void)
 {
 }*/
 
-
+void TIM2_IRQHandler(void){
+  HAL_TIM_IRQHandler(&Timer);
+  return;
+}
 /**
   * @}
   */ 

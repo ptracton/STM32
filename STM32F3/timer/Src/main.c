@@ -96,14 +96,15 @@ int main(void)
   Timer.Instance = TIM2;
   Timer.Init.Prescaler =  (uint32_t) (SystemCoreClock / 10000) - 1;
   Timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-  Timer.Init.Period = 10000-1;  // 72 million, 1/second
+  Timer.Init.Period = 72000000;//  10000-1;  // 72 million, 1/second
   Timer.Init.ClockDivision =  TIM_CLOCKDIVISION_DIV1;
   Timer.Channel = HAL_TIM_ACTIVE_CHANNEL_CLEARED;
   Timer.hdma[0] = NULL;
   Timer.State = HAL_TIM_STATE_RESET;
   HAL_TIM_Base_Init(&Timer);
   HAL_TIM_Base_Start_IT(&Timer);
-
+  __enable_irq();
+  
   /* Infinite loop */
   while (1)
   {
